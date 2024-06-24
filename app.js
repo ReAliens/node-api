@@ -14,15 +14,15 @@ const fileStorage = multer.diskStorage({
     cb(null, "images");
   },
   filename: (req, file, cb) => {
-    cb(null, new Date().toISOString() + "_" + file.originalname);
+    cb(null, new Date().toISOString() + "-" + file.originalname);
   },
 });
 
 const fileFilter = (req, file, cb) => {
   if (
-    file.mimeType === "image/jpeg" ||
-    file.mimeType === "image/jpg" ||
-    file.mimeType === "image/png"
+    file.mimetype === "image/png" ||
+    file.mimetype === "image/jpg" ||
+    file.mimetype === "image/jpeg"
   ) {
     cb(null, true);
   } else {
@@ -30,20 +30,18 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded()); // x-www-form-urlencoded <form>
+app.use(bodyParser.json()); // application/json
 app.use(
-  multer({
-    storage: fileStorage,
-    fileFilter,
-  }).single("image")
+  multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
 );
 app.use("/images", express.static(path.join(__dirname, "images")));
 
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-origin", "*");
+  res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Methods",
-    "GET, POST, PUT, PATCH, DELETE"
+    "OPTIONS, GET, POST, PUT, PATCH, DELETE"
   );
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   next();
@@ -55,15 +53,16 @@ app.use((error, req, res, next) => {
   console.log(error);
   const status = error.statusCode || 500;
   const message = error.message;
-
-  res.status(status).json(message);
+  res.status(status).json({ message: message });
 });
 
 mongoose
   .connect(
     "mongodb+srv://ahmedreda152:EQcK4nnEuAfnUqJ1@cluster0.y52xdx6.mongodb.net/socialMedia?w=majority&appName=Cluster0"
   )
-  .then((result) => app.listen(8080))
-  .catch((err) => {
-    console.log(err);
-  });
+  .then((result) => {
+    app.listen(8080);
+  })
+  .catch((err) => console.log(err));
+
+//    "mongodb+srv://ahmedreda152:EQcK4nnEuAfnUqJ1@cluster0.y52xdx6.mongodb.net/socialMedia?w=majority&appName=Cluster0"

@@ -12,7 +12,7 @@ const postSchema = new Schema(
       required: true,
     },
     imageUrl: {
-      type: Buffer,
+      type: String,
       required: true,
     },
     creator: {
