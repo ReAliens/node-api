@@ -111,7 +111,9 @@ exports.updatePost = (req, res, next) => {
       return post.save();
     })
     .then((result) => {
-      res.status(200).json({ message: "post successfully updated", post: res });
+      res
+        .status(200)
+        .json({ message: "post successfully updated", post: result });
     })
     .catch((err) => {
       if (!err.statusCode) {
